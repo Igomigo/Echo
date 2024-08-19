@@ -1,22 +1,22 @@
 const mongoose = require("mongoose");
 
-mongoose.set("strictQuery", false);
-
 const dbConnect = async () => {
-    try{
+    try {
+        // Connect to the MongoDB database using the URI from environment variables
         await mongoose.connect(process.env.MONGODB_URI);
+
+        console.log("Database connected successfully");
+
         const connection = mongoose.connection;
 
-        connection.on("connect", () => {
-            console.log("Database connected successfully");
-        });
-
+        // Listen for connection errors
         connection.on("error", (err) => {
-            console.log("Error connecting to Db:", err);
-        })
+            console.error("Error connecting to DB:", err);
+        });
+        
     } catch (err) {
-        console.error(err);
+        console.error("Initial connection error:", err);
     }
-}
+};
 
 module.exports = dbConnect;

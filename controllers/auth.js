@@ -1,6 +1,6 @@
 const message = require("../models/message");
 const User = require("../models/user");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 exports.register = async (req, res) => {
     // Handles user signup operation
@@ -17,12 +17,13 @@ exports.register = async (req, res) => {
         }
 
         // Hash password
+        //const salt = await bcrypt.genSalt(10);
         const hashedPwd = await bcrypt.hash(password, 10);
 
         // Create user
         const payload = {
-            name, password, password: hashedPwd, profile_pic
-        }
+            name, email, password: hashedPwd, profile_pic
+        };
         const user = new User(payload);
         const savedUser = await user.save();
 
