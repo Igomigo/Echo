@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/profile/update
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmMzOGMxMzU3M2Q4ZjJhZGI4ZDRkMDMiLCJpYXQiOjE3MjQxMDMwODMsImV4cCI6MTcyNTMxMjY4M30.ZMCjRn1IRQgbTE7Vum2mH3xBvNJbv-uOh4zPhrf_XVM
+
+{
+    "email": "amfat@mail.com",
+}
