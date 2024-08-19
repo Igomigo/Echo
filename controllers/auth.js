@@ -1,6 +1,7 @@
 const message = require("../models/message");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 exports.register = async (req, res) => {
     // Handles user signup operation

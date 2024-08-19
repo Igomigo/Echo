@@ -3,7 +3,7 @@ const cors = require("cors");
 require("dotenv").config();
 const morgan = require("morgan");
 const dbConnect = require("./config/dbConnect");
-const authRouter = require("./routes/auth");
+const authRouter = require("./routes/index");
 
 const app = express();
 dbConnect();
