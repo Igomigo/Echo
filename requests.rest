@@ -3,7 +3,7 @@ Content-Type: "application/json"
 
 {
     "name": "fatai",
-    "email": "fat@mail.com",
     "password": "fatai",
+    "email": "fat@mail.com",
     "profile_pic": ""
 }
