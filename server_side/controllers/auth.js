@@ -1,3 +1,6 @@
+// This implementation has been changed to the use of cookies
+// Kindly note that this app doesn't actively use this for now
+
 const message = require("../models/message");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");

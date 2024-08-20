@@ -1,3 +1,6 @@
+// This implementation has been changed to the use of cookies
+// Kindly note that this app doesn't actively use this for now
+
 // Returns user account info
 exports.userDetails = async (req, res) => {
     // Returns a user account detail
