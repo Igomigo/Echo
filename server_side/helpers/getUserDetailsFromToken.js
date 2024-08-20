@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken')
-const UserModel = require('../models/UserModel')
+const jwt = require('jsonwebtoken');
+const UserModel = require('../models/UserModel');
 
 
 const getUserDetailsFromToken = async(token)=>{
@@ -18,4 +18,4 @@ const getUserDetailsFromToken = async(token)=>{
     return user;
 }
 
-module.exports = getUserDetailsFromToken
+module.exports = getUserDetailsFromToken;

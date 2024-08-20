@@ -1,20 +1,32 @@
 const express = require("express");
-const auth = require("../controllers/auth");
-const profile = require("../controllers/userAccount");
-const authWare = require("../middlewares/authWare");
+const registerUser = require("../controllers/registerUser");
+const checkEmail = require("../controllers/checkEmail");
+const checkPassword = require("../controllers/checkPassword");
+const logout = require("../controllers/logout");
+const updateUserDetails = require("../controllers/updateUserDetails");
+const userDetails = require("../controllers/userDetails");
+//const profile = require("../controllers/userAccount");
+//const authWare = require("../middlewares/authWare");
 
 const router = express.Router();
 
-// Create User API
-router.post("/register", auth.register);
+//create user api
+router.post('/register',registerUser);
 
-// Login API
-router.post("/login", auth.login);
+//check user email
+router.post('/email',checkEmail);
 
-// User account data API
-router.get("/profile", authWare, profile.userDetails);
+//check user password
+router.post('/password',checkPassword);
 
-// Update user details API
-router.post("/profile/update", authWare, profile.updateDetails);
+//login user details
+router.get('/user-details',userDetails);
+
+//logout user
+router.get('/logout',logout);
+
+//update user details
+router.post('/update-user',updateUserDetails);
+
 
 module.exports = router;
