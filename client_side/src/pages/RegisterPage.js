@@ -8,4 +8,4 @@ const RegisterPage = () => {
   )
 }
 
-export default Register;
+export default RegisterPage;
