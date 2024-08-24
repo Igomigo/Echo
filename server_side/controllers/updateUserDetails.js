@@ -1,5 +1,5 @@
-const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken")
-const UserModel = require("../models/UserModel")
+const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
+const UserModel = require("../models/user");
 
 async function updateUserDetails(request,response){
     try {
@@ -17,7 +17,7 @@ async function updateUserDetails(request,response){
         const userInfomation = await UserModel.findById(user._id)
 
         return response.json({
-            message : "user update successfully",
+            message : "user data updated successfully",
             data : userInfomation,
             success : true
         })

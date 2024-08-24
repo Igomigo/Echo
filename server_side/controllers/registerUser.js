@@ -1,4 +1,4 @@
-const UserModel = require("../models/UserModel");
+const UserModel = require("../models/user");
 const bcryptjs = require('bcryptjs');
 
 async function registerUser(request,response){
@@ -9,7 +9,7 @@ async function registerUser(request,response){
 
         if(checkEmail){
             return response.status(400).json({
-                message : "Already user exits",
+                message : "User already exits",
                 error : true,
             });
         }

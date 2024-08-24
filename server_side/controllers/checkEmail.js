@@ -1,4 +1,4 @@
-const UserModel = require("../models/UserModel")
+const UserModel = require("../models/user");
 
 async function checkEmail(request,response){
     try {
@@ -8,7 +8,7 @@ async function checkEmail(request,response){
 
         if(!checkEmail){
             return response.status(400).json({
-                message : "user not exit",
+                message : "user does not exit",
                 error : true
             })
         }
