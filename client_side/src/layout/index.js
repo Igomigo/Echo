@@ -1,12 +1,12 @@
 import React from 'react'
-import logo from "../assets/Echo-logo-0.jpeg";
+import logo from "../assets/Echo-logo.jpeg";
 import css from "./index.module.css";
 
 const AuthLayouts = ({children}) => {
   return (
     <div>
       <>
-        <header className="flex justify-center items-center py-3 shadow-md">
+        <header className="flex justify-center items-center py-3 shadow-md bg-white">
             <img
                 src={logo}
                 alt='Echo logo'
