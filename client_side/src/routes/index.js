@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import CheckPasswordPage from "../pages/CheckPasswordPage";
-import CheckEmailPage from "../pages/CheckEmailPage";
+import CheckEmailPage from "../pages/checkEmailPage/CheckEmailPage";
 import HomePage from "../pages/HomePage";
 import MessagePage from "../components/MessagePage";
 import AuthLayouts from "../layout/index";
