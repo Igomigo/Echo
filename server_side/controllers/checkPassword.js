@@ -21,10 +21,10 @@ async function checkPassword(request,response){
             id : user._id,
             email : user.email 
         }
-        const token = await jwt.sign(tokenData,process.env.JWT_SECREAT_KEY,{ expiresIn : '1d'})
+        const token = await jwt.sign(tokenData,process.env.JWT_SECRET_KEY,{ expiresIn : '1d'})
 
         const cookieOptions = {
-            http : true,
+            httpOnly : true,
             secure : true
         }
 
@@ -35,6 +35,7 @@ async function checkPassword(request,response){
         })
 
     } catch (error) {
+        console.log(error);
         return response.status(500).json({
             message : error.message || error,
             error : true
