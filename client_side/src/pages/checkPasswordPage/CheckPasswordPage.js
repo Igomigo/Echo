@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import css from "./CheckPassword.module.css";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -15,12 +15,18 @@ const CheckPasswordPage = () => {
   //console.log("location:", location);
   //console.log("userId:", location.state._id);
 
+  useEffect(() => {
+    if (!location?.state?.name) {
+      navigate("/email");
+    }
+  }, []);
+
   function handleOnChange(e) {
     const {name, value} = e.target;
     setData({
       ...data,
       [name]: value,
-      userId: location.state._id
+      userId: location?.state._id
     });
   }
 
@@ -30,7 +36,15 @@ const CheckPasswordPage = () => {
     const url = `${process.env.REACT_APP_BACKEND_URL}/api/password`;
 
     try {
-      const response = await axios.post(url, data);
+      const response = await axios({
+        method: "post",
+        url: url,
+        data: {
+          userId: location?.state?._id,
+          password: data.password
+        },
+        withCredentials: true
+      });
 
       toast.success(response.data.message);
 
@@ -55,12 +69,12 @@ const CheckPasswordPage = () => {
               size={70}
             />*/}
             <Avatar
-              width={70}
-              height={70}
+              width={80}
+              height={80}
               name={location?.state?.name}
               imageUrl={location?.state?.profile_pic}
             />
-            <h2 className='font-semibold text-lg mt-2 text-center'>{location?.state?.name}</h2>
+            <h2 className='font-semibold text-lg mt-1 text-center'>{location?.state?.name}</h2>
           </div>
 
           <form className='grid gap-4 mt-4' onSubmit={handleSubmit}>
@@ -84,7 +98,7 @@ const CheckPasswordPage = () => {
             </button>
           </form>
 
-          <p className='text-center mt-2'>Don't have an account yet? <Link className="hover:text-primary font-semibold ml-1" to={"/register"}>Register</Link></p>
+          <p className='text-center mt-2'><Link className="hover:text-primary font-semibold ml-1" to={"/forgotPassword"}>Forgot password?</Link></p>
         </div>
       </div>
     </div>

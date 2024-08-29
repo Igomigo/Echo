@@ -86,7 +86,7 @@ const RegisterPage = () => {
                 type="text"
                 id='name'
                 name='name'
-                placeholder='Enter your name'
+                placeholder='name'
                 className='bg-slate-200 px-2 py-1'
                 value={data.name}
                 onChange={handleOnChange}

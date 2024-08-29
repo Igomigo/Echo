@@ -38,7 +38,7 @@ const Avatar = ({userId, name, imageUrl, width, height}) => {
 
   return (
     <div
-        className={`${css["avatar-container"]} ${bgColor}`}
+        className={`${css["avatar-container"]}`}
         style={{ width: `${width}px`, height: `${height}px` }}
     >
         {imageUrl ? (
@@ -48,7 +48,7 @@ const Avatar = ({userId, name, imageUrl, width, height}) => {
                 className={css["avatar-image"]}
             />
         ) : name ? (
-            <div className={css["avatar-initials"]}>
+            <div className={`${css["avatar-initials"]} ${bgColor}`}>
                 {avatar}
             </div>
         ) : (
