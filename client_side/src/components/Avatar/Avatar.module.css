@@ -1,0 +1,25 @@
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+}
+
+.avatar-image {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.avatar-initials {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+}
