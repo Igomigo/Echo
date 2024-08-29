@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
 const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+
 const dbConnect = require("./config/dbConnect");
 const authRouter = require("./routes/index");
 
@@ -12,6 +14,7 @@ app.use(cors({
     origin: process.env.CLIENT_URL,
     credentials: true
 }));
+app.use(cookieParser());
 app.use(express.json());
 app.use(morgan("dev"));
 
