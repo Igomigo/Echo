@@ -3,7 +3,7 @@ import App from "../App";
 import RegisterPage from "../pages/RegisterPage/RegisterPage";
 import CheckPasswordPage from "../pages/checkPasswordPage/CheckPasswordPage";
 import CheckEmailPage from "../pages/checkEmailPage/CheckEmailPage";
-import HomePage from "../pages/HomePage";
+import HomePage from "../pages/homePage/HomePage";
 import MessagePage from "../components/MessagePage";
 import AuthLayouts from "../layout/index";
 import ForgotPassword from "../pages/forgot-password/ForgotPassword";
