@@ -2,7 +2,8 @@ import React, { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setToken, setUser } from '../../redux/userSlice';
+import { logout, setUser } from '../../redux/userSlice';
+import Sidebar from '../../components/Sidebar';
 
 const HomePage = () => {
 
@@ -41,8 +42,10 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div>
-      HomePage
+    <div className='grid lg:grid-cols-[300px,1fr] h-screen max-h-screen'>
+      <section className='bg-white'>
+        <Sidebar/>
+      </section>
 
       {/** Display the message page */}
       <section>

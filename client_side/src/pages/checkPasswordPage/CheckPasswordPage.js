@@ -75,8 +75,8 @@ const CheckPasswordPage = () => {
               size={70}
             />*/}
             <Avatar
-              width={80}
-              height={80}
+              width={75}
+              height={75}
               name={location?.state?.name}
               imageUrl={location?.state?.profile_pic}
             />

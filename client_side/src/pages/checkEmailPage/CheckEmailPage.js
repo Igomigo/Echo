@@ -37,7 +37,7 @@ const CheckEmailPage = () => {
         });
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message || "Server side error");
       console.log("error", error);
     }
   }
