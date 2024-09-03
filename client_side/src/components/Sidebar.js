@@ -10,7 +10,7 @@ import EditUserDetails from './EditUserDetails';
 const Sidebar = () => {
 
     const user = useSelector(state => state?.user);
-    const [editUserOpen, setEditUserOpen] = useState(true);
+    const [editUserOpen, setEditUserOpen] = useState(false);
 
     return (
         <div className='w-full h-full'>
@@ -35,6 +35,7 @@ const Sidebar = () => {
                             width={40}
                             height={40}
                             name={user?.name}
+                            imageUrl={user?.profile_pic}
                         />
                     </button>
                     <button title='logout' className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200'>
@@ -47,7 +48,7 @@ const Sidebar = () => {
 
             {/** Edit user details */}
             {editUserOpen && (
-                <EditUserDetails onClose={() => setEditUserOpen(false)} data={user}/>
+                <EditUserDetails onClose={() => setEditUserOpen(false)} userData={user}/>
             )}
         </div>
     )

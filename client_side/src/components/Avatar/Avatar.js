@@ -3,7 +3,7 @@ import { PiUserCircle } from "react-icons/pi";
 import css from "./Avatar.module.css";
 
 
-const Avatar = ({userId, name, imageUrl, width, height}) => {
+const Avatar = ({userId, name, imageUrl, width, height, className}) => {
 
     let avatar = "";
 
@@ -48,7 +48,7 @@ const Avatar = ({userId, name, imageUrl, width, height}) => {
                 className={css["avatar-image"]}
             />
         ) : name ? (
-            <div className={`${css["avatar-initials"]} ${bgColor}`}>
+            <div className={`${css["avatar-initials"]} ${bgColor} ${className}`}>
                 {avatar}
             </div>
         ) : (

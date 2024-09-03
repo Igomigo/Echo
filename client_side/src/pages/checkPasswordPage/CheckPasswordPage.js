@@ -49,7 +49,7 @@ const CheckPasswordPage = () => {
         withCredentials: true
       });
 
-      toast.success(response.data.message);
+      toast.success(response?.data?.message);
 
       if (response.data.success) {
         dispatch(setToken(response?.data?.token));
