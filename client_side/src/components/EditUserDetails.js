@@ -66,10 +66,10 @@ const EditUserDetails = ({ onClose, userData }) => {
 
   return (
     <div className='fixed top-0 bottom-0 left-0 right-0 bg-gray-800 bg-opacity-40 flex justify-center items-center'>
-      <div className='bg-white rounded px-4 py-6 m-1 w-full max-w-sm'>
+      <div className='bg-white rounded px-4 py-6 m-2 w-full max-w-sm'>
         {/**
           *<h2 className='font-semibold'>Profile Details</h2>
-           <p className='text-sm'>Edit user</p>
+          *<p className='text-sm'>Edit user</p>
         */}
 
         <form className='grid gap-3 mt-2' onSubmit={handleSubmit}>
