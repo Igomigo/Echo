@@ -66,7 +66,7 @@ const CheckPasswordPage = () => {
   }
 
   return (
-    <div>
+    <div className='mx-2'>
       <div className='mt-5'>
         <div className='bg-white w-full max-w-md  rounded overflow-hidden p-4 mx-auto'>
 

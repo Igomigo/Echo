@@ -4,6 +4,8 @@ import uploadFile from '../helpers/uploadFile';
 import Divider from './Divider';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 
 const EditUserDetails = ({ onClose, userData }) => {
   const [data, setData] = useState({
@@ -11,6 +13,8 @@ const EditUserDetails = ({ onClose, userData }) => {
     email: userData?.email,
     profile_pic: userData?.profile_pic
   });
+
+  const dispatch = useDispatch();
 
   //console.log("State data", userData);
   //console.log("useState data", data);
@@ -52,6 +56,8 @@ const EditUserDetails = ({ onClose, userData }) => {
 
       if (response?.data?.success) {
         toast.success(response?.data?.message);
+        dispatch(setUser(response?.data?.data));
+        onClose();
       }
     } catch (error) {
       toast(error.response?.data?.message);
@@ -62,9 +68,9 @@ const EditUserDetails = ({ onClose, userData }) => {
     <div className='fixed top-0 bottom-0 left-0 right-0 bg-gray-800 bg-opacity-40 flex justify-center items-center'>
       <div className='bg-white rounded px-4 py-6 m-1 w-full max-w-sm'>
         {/**
-         * <h2 className='font-semibold'>Profile Details</h2>
+          *<h2 className='font-semibold'>Profile Details</h2>
            <p className='text-sm'>Edit user</p>
-         */}
+        */}
 
         <form className='grid gap-3 mt-2' onSubmit={handleSubmit}>
 
@@ -76,7 +82,7 @@ const EditUserDetails = ({ onClose, userData }) => {
                 imageUrl={data?.profile_pic}
                 name={data?.name}
                 className={"text-xl"}
-              />
+              />  
 
               <label className='mt-2.5 px-2 py-1 rounded hover:bg-slate-200 border border-primary' htmlFor='profile_pic'>Change Photo</label>
               <input

@@ -43,7 +43,7 @@ const CheckEmailPage = () => {
   }
 
   return (
-    <div>
+    <div className="mx-2">
       <div className='bg-white mt-5 w-full max-w-md rounded overflow-hidden p-4 formDiv mx-auto'>
         <div className=''>
 

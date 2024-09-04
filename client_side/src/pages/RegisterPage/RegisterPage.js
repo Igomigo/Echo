@@ -74,7 +74,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <div>
+    <div className="mx-2">
       <div className='bg-white mt-5 w-full max-w-md rounded overflow-hidden p-4 formDiv mx-auto'>
         <div className=''>
           <h3 className={css.welcome}>Welcome to Echo</h3>
