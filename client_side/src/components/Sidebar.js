@@ -7,11 +7,16 @@ import Avatar from './Avatar/Avatar';
 import { useSelector } from 'react-redux';
 import EditUserDetails from './EditUserDetails';
 import Divider from './Divider';
+import { FiArrowUpLeft } from "react-icons/fi";
+import SearchUser from './SearchUser';
+
 
 const Sidebar = () => {
 
     const user = useSelector(state => state?.user);
     const [editUserOpen, setEditUserOpen] = useState(false);
+    const [allUser, setAllUser] = useState([]);
+    const [openSearchUser, setOpenSearchUser] = useState(true);
 
     return (
         <div className='w-full h-full grid grid-cols-[48px,1fr] bg-white'>
@@ -23,9 +28,9 @@ const Sidebar = () => {
                         />
                     </NavLink>
 
-                    <NavLink className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200' title='add friend'>
+                    <NavLink onClick={() => setOpenSearchUser(true)} className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200' title='add friend'>
                         <FaUserPlus
-                                size={20}
+                            size={20}
                         />
                     </NavLink>
                 </div>
@@ -56,8 +61,21 @@ const Sidebar = () => {
 
                 <div className='bg-slate-200 p-[0.5px] mx-1'></div>
 
-                <div className='bg-red-500 h-[calc(100vh-65px)] overflow-x-hidden overflow-y-scroll scroll'>
-
+                <div className='h-[calc(100vh-65px)] overflow-x-hidden overflow-y-scroll scroll'>
+                    {
+                        allUser.length === 0 && (
+                            <div className='mt-12'>
+                                <div className='flex justify-center items-center my-4 text-slate-600'>
+                                    <FiArrowUpLeft
+                                        size={50}
+                                    />
+                                </div>
+                                <p className='text-lg text-center text-slate-400'>
+                                    Explore users to start a conversation with.
+                                </p>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
 
@@ -65,6 +83,13 @@ const Sidebar = () => {
             {editUserOpen && (
                 <EditUserDetails onClose={() => setEditUserOpen(false)} userData={user}/>
             )}
+
+            {/** Search User */}
+            {
+                openSearchUser && (
+                    <SearchUser onClose={() => setOpenSearchUser(false)}/>
+                )
+            }
         </div>
     )
 }

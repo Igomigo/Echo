@@ -28,13 +28,17 @@ const HomePage = () => {
         dispatch(setUser(response.data.data));
       }
 
-      if (response?.data?.data?.logout) {
+      if (response?.data?.logout) {
         dispatch(logout());
         navigate("/email");
       }
 
       console.log("User details:", response);
     } catch (err) {
+      if (err.response?.data?.error) {
+        dispatch(logout());
+        navigate("/email");
+      }
       console.log("Error:", err);
     }
   }
