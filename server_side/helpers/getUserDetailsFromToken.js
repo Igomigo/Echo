@@ -15,7 +15,7 @@ const getUserDetailsFromToken = async(token)=>{
 
     const user = await UserModel.findById(decode.id).select('-password');
 
-    return user; 
+    return user;
 }
 
 module.exports = getUserDetailsFromToken;
