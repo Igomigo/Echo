@@ -6,6 +6,7 @@ const logout = require("../controllers/logout");
 const updateUserDetails = require("../controllers/updateUserDetails");
 const userDetails = require("../controllers/userDetails");
 const searchUser = require("../controllers/searchUser");
+
 //const profile = require("../controllers/userAccount");
 //const authWare = require("../middlewares/authWare");
 

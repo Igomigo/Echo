@@ -3,16 +3,16 @@ const User = require("../models/user");
 const searchUser = async (req, res) => {
     try {
         const { data } = req.body;
-        const query = new RegExp(data, "i", "g");
+        const query = new RegExp(data, "i");
         
         const user = await User.find({
             $or: [
                 { name: query },
                 { email: query }
             ]
-        });
+        }).select("-password");
 
-        return res.status(404).json({
+        return res.status(200).json({
             success: true,
             message: "Successful",
             data: user
