@@ -16,7 +16,7 @@ const Sidebar = () => {
     const user = useSelector(state => state?.user);
     const [editUserOpen, setEditUserOpen] = useState(false);
     const [allUser, setAllUser] = useState([]);
-    const [openSearchUser, setOpenSearchUser] = useState(true);
+    const [openSearchUser, setOpenSearchUser] = useState(false);
 
     return (
         <div className='w-full h-full grid grid-cols-[48px,1fr] bg-white'>
@@ -28,11 +28,11 @@ const Sidebar = () => {
                         />
                     </NavLink>
 
-                    <NavLink onClick={() => setOpenSearchUser(true)} className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200' title='add friend'>
+                    <div onClick={() => setOpenSearchUser(true)} className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200' title='add friend'>
                         <FaUserPlus
                             size={20}
                         />
-                    </NavLink>
+                    </div>
                 </div>
 
                 <div>
@@ -42,6 +42,7 @@ const Sidebar = () => {
                             height={40}
                             name={user?.name}
                             imageUrl={user?.profile_pic}
+                            userId={user?._id}
                         />
                     </button>
                     <button title='logout' className='w-12 h-12 flex justify-center items-center cursor-pointer rounded hover:bg-slate-200'>

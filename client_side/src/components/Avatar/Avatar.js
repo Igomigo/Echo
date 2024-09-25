@@ -1,9 +1,11 @@
 import React from 'react'
 import { PiUserCircle } from "react-icons/pi";
 import css from "./Avatar.module.css";
+import { useSelector } from 'react-redux';
 
 
 const Avatar = ({userId, name, imageUrl, width, height, className}) => {
+    const onlineUser = useSelector(state => state?.user?.onlineUser);
 
     let avatar = "";
 
@@ -36,24 +38,32 @@ const Avatar = ({userId, name, imageUrl, width, height, className}) => {
     const randomIndex = Math.floor(Math.random() * bgColors.length);
     const bgColor = bgColors[randomIndex];
 
+    const isOnline = onlineUser.includes(userId);
+
   return (
     <div
-        className={`${css["avatar-container"]}`}
+        className={`${css["avatar-container"]} relative`}
         style={{ width: `${width}px`, height: `${height}px` }}
     >
         {imageUrl ? (
             <img
                 src={imageUrl}
                 alt={name}
-                className={css["avatar-image"]}
+                className={`${css["avatar-image"]} rounded-full`}
             />
         ) : name ? (
-            <div className={`${css["avatar-initials"]} ${bgColor} ${className}`}>
+            <div className={`${css["avatar-initials"]} ${bgColor} ${className} rounded-full`}>
                 {avatar}
             </div>
         ) : (
             <PiUserCircle size={width} />
         )}
+
+        {
+            isOnline && (
+                <div className='bg-green-600 p-1 absolute bottom-1 right-0 rounded-full z-10'></div>
+            )
+        }
     </div>
   )
 }

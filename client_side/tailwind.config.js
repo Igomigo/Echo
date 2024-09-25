@@ -8,6 +8,9 @@ module.exports = {
       colors: {
         primary: "#10634e",
         secondary: "#09382c"
+      },
+      maxHeight: {
+        height: "80vh"
       }
     },
   },

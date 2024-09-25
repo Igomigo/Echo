@@ -2,9 +2,10 @@ import React, { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
-import { logout, setUser } from '../../redux/userSlice';
+import { logout, setUser, setOnlineUser, setSocketConnection } from '../../redux/userSlice';
 import Sidebar from '../../components/Sidebar';
 import logo from "../../assets/Echo-logo.jpeg";
+import io from "socket.io-client";
 
 const HomePage = () => {
 
@@ -47,6 +48,34 @@ const HomePage = () => {
     getUserDetails();
   }, []);
 
+  // Socket client connection
+  useEffect(() => {
+    const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
+      auth: {
+        token: localStorage.getItem("token")
+      }
+    });
+
+    socketConnection.on("onlineUser", (data) => {
+      console.log("Online users:", data);
+      dispatch(setOnlineUser(data))
+    });
+
+    // Handle socket errors
+    socketConnection.on("error", (message) => {
+      console.log(message);
+      dispatch(logout());
+      navigate("/email");
+    });
+
+    dispatch(setSocketConnection(socketConnection));
+    console.log("socket Connection:", socketConnection);
+
+    return () => {
+      socketConnection.disconnect();
+    }
+  }, []);
+
   const basePath = location.pathname === "/"
 
   return (
@@ -60,7 +89,7 @@ const HomePage = () => {
         <Outlet/>
       </section>
 
-      <div className='lg:flex flex-col justify-center items-center gap-2 hidden'>
+      <div className={`${!basePath ? 'lg:hidden' : 'lg:flex'} flex-col justify-center items-center gap-2 hidden`}>
         <div className=''>
            <img
               src={logo}
