@@ -6,8 +6,9 @@ const cookieParser = require("cookie-parser");
 
 const dbConnect = require("./config/dbConnect");
 const authRouter = require("./routes/index");
+const { app, server } = require("./socket/index");
 
-const app = express();
+//const app = express();
 dbConnect();
 
 app.use(cors({
@@ -24,6 +25,6 @@ app.use("/api", authRouter);
 const PORT = process.env.PORT || 8080;
 
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server is listening on port:", PORT);
 });

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { logout } from '../redux/userSlice';
 import Avatar from './Avatar/Avatar';
+import { IoEllipsisVerticalSharp } from "react-icons/io5";
+import { FaAngleLeft } from "react-icons/fa6";
 
 const MessagePage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector(state => state?.user);
   const params = useParams();
   const [userData, setUserData] = useState({
     _id: "",
@@ -28,12 +31,17 @@ const MessagePage = () => {
         setUserData(data);
       });
     }
-  });
+  }, [socketConnection, params?.userId, user]);
 
   return (
     <div>
-      <header className='sticky top-0 h-16 bg-white'>
-          <div>
+      <header className='sticky top-0 h-16 bg-white flex justify-between items-center px-3'>
+          <div className="flex items-center gap-3 p-2">
+              <Link to={"/"}>
+                <FaAngleLeft
+                  size={25}
+                />
+              </Link>
               <div>
                 <Avatar
                   width={50}
@@ -44,13 +52,21 @@ const MessagePage = () => {
                 />
               </div>
               <div>
-                <h3>{userData?.name}</h3>
-                <p>
+                <h3 className='font-semibold text-lg -my-2 text-ellipsis line-clamp-1'>{userData?.name}</h3>
+                <p className='-my-2 text-md'>
                   {
-                    userData?.online ? "online" : "offline"
+                    userData?.online ? <span className='text-primary'>online</span> : <span className='text-slate-400'>offline</span>
                   }
                 </p>
               </div>
+          </div>
+
+          <div>
+            <button className="cursor-pointer hover:text-primary">
+              <IoEllipsisVerticalSharp
+                size={22}
+              />
+            </button>
           </div>
       </header>
     </div>

@@ -74,7 +74,7 @@ const EditUserDetails = ({ onClose, userData }) => {
 
         <form className='grid gap-3 mt-2' onSubmit={handleSubmit}>
 
-        <div>
+          <div>
             <div className="my-1 flex flex-col justify-center items-center cursor-pointer" >
               <Avatar
                 width={95}
@@ -123,7 +123,7 @@ const EditUserDetails = ({ onClose, userData }) => {
 
           <div className='flex gap-2 w-fit ml-auto'>
             <button onClick={onClose} className='border border-primary px-4 rounded hover:bg-primary hover:text-white text-secondary'>Cancel</button>
-            <button onSubmit={handleSubmit} className='border border-primary px-4 rounded bg-primary text-white hover:bg-secondary'>Save</button>
+            <button type="submit" onSubmit={handleSubmit} className='border border-primary px-4 rounded bg-primary text-white hover:bg-secondary'>Save</button>
           </div>
         </form>
       </div>
