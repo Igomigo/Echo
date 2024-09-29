@@ -45,7 +45,7 @@ const EditUserDetails = ({ onClose, userData }) => {
     e.preventDefault();
     e.stopPropagation();
     try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/api/update-user`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/update-user`;
 
       const response = await axios({
         method: "post",

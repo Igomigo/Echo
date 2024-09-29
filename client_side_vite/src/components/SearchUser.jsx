@@ -12,7 +12,7 @@ const SearchUser = ({ onClose }) => {
   const [searchInput, setSearch] = useState("");
 
   const handleSearchUser = async () => {
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/search-user`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/search-user`;
 
     try {
       setLoading(true);

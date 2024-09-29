@@ -22,7 +22,7 @@ const CheckEmailPage = () => {
   async function handleSubmit (e) {
     e.preventDefault();
 
-    const url = `${process.env.REACT_APP_BACKEND_URL}/api/email`;
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/email`;
 
     try {
       const response = await axios.post(url, data);

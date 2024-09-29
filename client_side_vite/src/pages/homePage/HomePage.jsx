@@ -18,7 +18,7 @@ const HomePage = () => {
 
   const getUserDetails = async () => {
     try {
-      const url = `${process.env.REACT_APP_BACKEND_URL}/api/user-details`;
+      const url = `${import.meta.env.VITE_BACKEND_URL}/api/user-details`;
 
       const response = await axios({
         url: url,
@@ -50,7 +50,7 @@ const HomePage = () => {
 
   // Socket client connection
   useEffect(() => {
-    const socketConnection = io(process.env.REACT_APP_BACKEND_URL, {
+    const socketConnection = io(import.meta.env.VITE_BACKEND_URL, {
       auth: {
         token: localStorage.getItem("token")
       }

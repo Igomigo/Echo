@@ -53,7 +53,7 @@ const MessagePage = () => {
               </div>
               <div>
                 <h3 className='font-semibold text-lg -my-2 text-ellipsis line-clamp-1'>{userData?.name}</h3>
-                <p className='-my-2 text-md'>
+                <p className='-my-2 text-md lg:text-md sm:text-sm'>
                   {
                     userData?.online ? <span className='text-primary'>online</span> : <span className='text-slate-400'>offline</span>
                   }
