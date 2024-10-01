@@ -20,7 +20,13 @@ const userSchema =  new mongoose.Schema({
     }
 },{
     timestamps : true
-})
+});
+
+// Update the updated at field before a save action is triggered
+userSchema.pre("save", function (next) {
+    this.updatedAt = Date.now();
+    next();
+});
 
 const UserModel = mongoose.model('User',userSchema)
 

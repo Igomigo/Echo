@@ -4,6 +4,8 @@ const { Server } = require("socket.io");
 const User = require("../models/user");
 const http = require("http");
 const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
+const Conversation = require("../models/conversation");
+const Message = require("../models/message");
 
 const app = express();
 
@@ -58,6 +60,39 @@ io.on("connection", async (socket) => {
             online: onlineUser.has(userId)
         };
         socket.emit("message-user", payload);
+    });
+
+    // Handle new message
+    socket.on("new message", async (data) => {
+        // Check if conversation exists
+        let conversation = await Conversation.findOne({
+            $or: [
+                { sender: data?.sender, receiver: data?.receiver },
+                { sender: data?.receiver, receiver: data?.sender }
+            ]
+        });
+
+        if (!conversation) {
+            const newConversation = new Conversation({
+                sender: data?.sender,
+                receiver: data?.receiver
+            });
+
+            conversation = await newConversation.save();
+        }
+
+        // Create a new message
+        const message = new Message({
+            text: data?.text,
+            imageUrl: data?.imageUrl,
+            videoUrl: data?.videoUrl,
+            msgByUserId: data?.sender
+        });
+        const savedMessage = await message.save();
+
+        // Add message Id top the conversation model and save
+        conversation.messages.push(savedMessage._id);
+        await conversation.save();
     });
 
     // Disconnect event

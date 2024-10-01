@@ -19,7 +19,13 @@ const conversationSchema = new mongoose.Schema({
     ]
 },{
     timestamps : true
-})
+});
+
+// Update the updated at field before a save action is triggered
+conversationSchema.pre("save", function (next) {
+    this.updatedAt = Date.now();
+    next();
+});
 
 const ConversationModel = mongoose.model('Conversation',conversationSchema);
 
