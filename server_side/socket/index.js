@@ -36,7 +36,7 @@ io.on("connection", async (socket) => {
         }
 
         // Join user to a room
-        socket.join(user._id);
+        socket.join(user._id.toString());
         onlineUser.add(user._id.toString());
 
         io.emit("onlineUser", Array.from(onlineUser));
@@ -93,6 +93,17 @@ io.on("connection", async (socket) => {
         // Add message Id top the conversation model and save
         conversation.messages.push(savedMessage._id);
         await conversation.save();
+
+        // Emit the conversation data back to the client
+        const getConversationMessages = await Conversation.findOne({
+            $or: [
+                { sender: data?.sender, receiver: data?.receiver },
+                { sender: data?.receiver, receiver: data?.sender }
+            ]
+        }).populate("messages").sort({updatedAt: -1});
+
+        io.to(data?.sender).emit("message", getConversationMessages.messages);
+        io.to(data?.receiver).emit("message", getConversationMessages.messages);
     });
 
     // Disconnect event
