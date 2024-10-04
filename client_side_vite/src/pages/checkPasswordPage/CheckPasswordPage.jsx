@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import css from "./CheckPasswordPage.module.css";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -10,6 +10,7 @@ import { setToken, setUser } from '../../redux/userSlice';
 const CheckPasswordPage = () => {
 
   const [data, setData] = useState({ password: "" });
+  const focusInput = useRef(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,6 +18,11 @@ const CheckPasswordPage = () => {
 
   //console.log("location:", location);
   //console.log("userId:", location.state._id);
+
+  useEffect(() => {
+    // Focus on the password input box
+    focusInput.current.focus();
+  });
 
   useEffect(() => {
     if (!location?.state?.name) {
@@ -96,6 +102,7 @@ const CheckPasswordPage = () => {
                 value={data.password}
                 onChange={handleOnChange}
                 required
+                ref={focusInput}
               />
             </div>
 

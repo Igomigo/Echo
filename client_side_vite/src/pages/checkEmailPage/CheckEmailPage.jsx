@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import css from "./CheckEmailPage.module.css";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -8,8 +8,14 @@ import { PiUserCircle } from "react-icons/pi";
 const CheckEmailPage = () => {
 
   const [data, setData] = useState({ email: "" });
+  const focusInput = useRef(null);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // focus the email input when the component renders
+    focusInput.current.focus();
+  }, []);
 
   function handleOnChange(e) {
     const {name, value} = e.target;
@@ -68,6 +74,7 @@ const CheckEmailPage = () => {
                 value={data.email}
                 onChange={handleOnChange}
                 required
+                ref={focusInput}
               />
             </div>
 

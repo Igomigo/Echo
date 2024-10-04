@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import uploadFile from "../../helpers/uploadFile";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Loading from '../../components/Loading';
 
 const RegisterPage = () => {
   const [data, setData] = useState({
@@ -15,6 +16,7 @@ const RegisterPage = () => {
   });
 
   const [uploadPhoto, setUploadPhoto] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   function handleOnChange(e) {
@@ -28,7 +30,9 @@ const RegisterPage = () => {
   async function handleUploadPhoto (e) {
     const file = e.target.files[0];
 
+    setLoading(true);
     const upload = await uploadFile(file);
+    setLoading(false);
 
     setData({
       ...data, "profile_pic": upload?.secure_url
@@ -127,7 +131,13 @@ const RegisterPage = () => {
                 <div className='bg-slate-200 h-14 flex justify-center items-center border rounded hover:border-primary cursor-pointer'>
                   <p className='text-sm max-w-[300] text-ellipsis line-clamp-1'>
                     {
-                      uploadPhoto?.name ? uploadPhoto?.name : "Upload profile photo"
+                      uploadPhoto?.name ? uploadPhoto?.name : !loading && ("Upload profile photo")
+                    }
+
+                    {
+                      loading && (
+                        <Loading/>
+                      )
                     }
                   </p>
                   {
