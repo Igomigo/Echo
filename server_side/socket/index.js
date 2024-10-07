@@ -6,6 +6,7 @@ const http = require("http");
 const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
 const Conversation = require("../models/conversation");
 const Message = require("../models/message");
+const { default: mongoose } = require("mongoose");
 
 const app = express();
 
@@ -60,10 +61,29 @@ io.on("connection", async (socket) => {
             online: onlineUser.has(userId)
         };
         socket.emit("message-user", payload);
+
+        // get previous messages
+        const getConversationMessages = await Conversation.findOne({
+            $or: [
+                { sender: user?._id, receiver: userId },
+                { sender: userId, receiver: user?._id }
+            ]
+        }).populate("messages").sort({updatedAt: -1});
+
+        if (!getConversationMessages) {
+            socket.emit("message", []);
+        } else {
+            socket.emit("message", getConversationMessages.messages);
+        }
     });
 
     // Handle new message
     socket.on("new message", async (data) => {
+        // Ensure data.sender and data.receiver are valid ObjectIds
+        if (!data?.sender || !data?.receiver) {
+            console.log("Invalid sender or receiver");
+            return;
+        }
         // Check if conversation exists
         let conversation = await Conversation.findOne({
             $or: [
@@ -100,10 +120,44 @@ io.on("connection", async (socket) => {
                 { sender: data?.sender, receiver: data?.receiver },
                 { sender: data?.receiver, receiver: data?.sender }
             ]
-        }).populate("messages").sort({updatedAt: -1});
+        }).populate("messages").sort({ updatedAt: -1 });
 
         io.to(data?.sender).emit("message", getConversationMessages.messages);
         io.to(data?.receiver).emit("message", getConversationMessages.messages);
+    });
+
+    socket.on("sidebar", async (currentUserId) => {
+        console.log("CurrentUserId", currentUserId);
+
+        // Validate the currentUserId
+        if (!currentUserId || currentUserId === "") {
+            console.error("Invalid CurrentUserId:", currentUserId);
+            return;
+        }
+
+        // Get all conversations for a particular user
+        const currentUserConversations = await Conversation.find({
+            $or: [
+                { sender: currentUserId },
+                { receiver: currentUserId }
+            ]
+        }).sort({ updatedAt: -1 }).populate("messages");
+
+        const conversation = currentUserConversations.map((conv) => {
+            const countUnseenMsg = conv?.messages.reduce((prev, curr) => prev + (curr.seen ? 0 : 1), 0);
+
+            const payload = {
+                id: conv?._id,
+                sender: conv?.sender,
+                receiver: conv?.receiver,
+                unSeenMsg: countUnseenMsg,
+                lastMsg: conv?.messages[conv?.messages?.length - 1]
+            }
+        });
+
+        //console.log("currentUserConversations", currentUserConversations);
+
+        socket.emit("conversation", conversation);
     });
 
     // Disconnect event
