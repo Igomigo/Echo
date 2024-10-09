@@ -60,7 +60,7 @@ const MessagePage = () => {
         setAllMessage(data);
       });
     }
-  }, [socketConnection, params?.userId]);
+  }, [socketConnection, params?.userId, user]);
 
   const handleImageVideoPopup = () => {
     setImageVideoPopup(prev => !prev);
@@ -188,20 +188,54 @@ const MessagePage = () => {
       </header>
 
       {/**Show all messages */}
-      <section className='h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scroll bg-slate-400 bg-opacity-50'>
+      <section className='h-[calc(100vh-128px)] overflow-x-hidden overflow-y-scroll scrollbar relative bg-slate-200 bg-opacity-50'>
+
+        {/** All messages will display here */}
+        <div className='flex flex-col mx-2 py-3' ref={currentMessage}>
+          {
+            allMessage.map((msg, index) => {
+              return (
+                <div className={`bg-white p-1 py-2 mt-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-teal-300" : ""}`}>
+                  <div className='w-full'>
+                    {
+                      msg?.imageUrl && (
+                        <img
+                          src={msg?.imageUrl}
+                          className='w-full h-full object-scale-down'
+                        />
+                      )
+                    }
+                    {
+                      msg?.videoUrl && (
+                        <video
+                          src={msg?.videoUrl}
+                          className='w-full h-full object-scale-down'
+                          controls
+                        />
+                      )
+                    }
+                  </div>
+                  <p className='px-2'>{msg?.text}</p>
+                  <p className="text-xs ml-auto w-fit text-slate-500">{moment(msg?.createdAt).format("hh:mm")}</p>
+                </div>
+              )
+            })
+          }
+        </div>
 
         {/** Show uploaded image */}
         {
           message.imageUrl && (
-            <div className='relative w-full h-full bg-slate-800 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
-              <div onClick={handleClearUploadedImage} className='absolute top-0 right-0 w-fit p-2 cursor-pointer hover:text-white'>
-                <IoClose size={30}/>
+            <div className='w-full h-full sticky bottom-0 bg-slate-700 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+              <div className='w-fit p-2 absolute top-0 right-0 cursor-pointer hover:text-white' onClick={handleClearUploadedImage}>
+                  <IoClose size={30}/>
               </div>
               <div className='bg-white p-3'>
-                <img
-                  src={message.imageUrl}
-                  className='aspect-square w-full h-full max-w-sm m-2 object-scale-down'
-                />
+                  <img
+                    src={message.imageUrl}
+                    alt='uploadImage'
+                    className='aspect-square w-full h-full max-w-sm m-2 object-scale-down'
+                  />
               </div>
             </div>
           )
@@ -210,7 +244,7 @@ const MessagePage = () => {
         {/** Show uploaded video */}
         {
           message.videoUrl && (
-            <div className='relative w-full h-full bg-slate-800 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
+            <div className='w-full h-full sticky bottom-0 bg-slate-800 bg-opacity-30 flex justify-center items-center rounded overflow-hidden'>
               <div onClick={handleClearUploadedVideo} className='absolute top-0 right-0 w-fit p-2 cursor-pointer hover:text-white'>
                 <IoClose size={30}/>
               </div>
@@ -229,24 +263,11 @@ const MessagePage = () => {
 
         {
           loading && (
-            <div className='w-full h-full flex justify-center items-center'>
+            <div className='w-full h-full sticky bottom-0 flex justify-center items-center'>
               <Loading/>
             </div>
           )
         }
-        {/** All messages will display here */}
-        <div className='flex flex-col mx-2 py-3' ref={currentMessage}>
-          {
-            allMessage.map((msg, index) => {
-              return (
-                <div className={`bg-white p-1 py-2 mt-1 rounded w-fit max-w-80 ${user._id === msg.msgByUserId ? "ml-auto bg-teal-300" : ""}`}>
-                  <p className='px-2'>{msg.text}</p>
-                  <p className="text-xs ml-auto w-fit text-slate-500">{moment(msg.createdAt).format("hh:mm")}</p>
-                </div>
-              )
-            })
-          }
-        </div>
       </section>
 
       {/** Send message input */}

@@ -17,13 +17,16 @@ const SearchUser = ({ onClose }) => {
     try {
       setLoading(true);
       const response = await axios.post(url, {
-        data: searchInput
+        data: searchInput,
+      }, {
+        withCredentials: true
       });
       setLoading(false);
 
       setSearchUser(response?.data?.data);
 
     } catch (err) {
+      setLoading(false);
       toast.error(err?.response?.data?.message);
     }
   }
