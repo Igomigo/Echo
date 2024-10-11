@@ -195,7 +195,7 @@ const MessagePage = () => {
           {
             allMessage.map((msg, index) => {
               return (
-                <div className={`bg-white p-1 py-2 mt-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-teal-300" : ""}`}>
+                <div className={`bg-white p-1 py-2 mt-1 rounded w-fit max-w-[280px] md:max-w-sm lg:max-w-md ${user._id === msg.msgByUserId ? "ml-auto bg-teal-400" : ""}`}>
                   <div className='w-full'>
                     {
                       msg?.imageUrl && (

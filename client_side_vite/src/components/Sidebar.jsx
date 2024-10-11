@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { BsChatDotsFill } from "react-icons/bs";
-import { FaUserPlus } from "react-icons/fa";
+import { FaImage, FaUserPlus, FaVideo } from "react-icons/fa";
 import { NavLink } from 'react-router-dom';
 import { TbLogout } from "react-icons/tb";
 import Avatar from './Avatar/Avatar';
@@ -44,7 +44,7 @@ const Sidebar = () => {
                     }
                 });
 
-                setAllUser(data);
+                setAllUser(conversationUserData);
             });
         }
     }, [socketConnection, user]);
@@ -112,7 +112,40 @@ const Sidebar = () => {
                     {
                         allUser.map((conv, index) => {
                             return (
-                                <div key={conv?._id}>
+                                <div key={conv?._id} className='flex items-center gap-2 py-3 px-2 hover:cursor-pointer rounded hover:bg-slate-200'>
+                                    <div>
+                                        <Avatar
+                                            imageUrl={conv?.userDetails?.profile_pic}
+                                            name={conv?.userDetails?.name}
+                                            width={40}
+                                            height={40}
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className='text-ellipsis line-clamp-1 font-semibold text-base'>{conv?.userDetails?.name}</h3>
+                                        <div className='text-slate-500 text-xs flex items-center gap-1'>
+                                            <div className='flex items-center gap-2'>
+                                                {
+                                                    conv?.lastMsg?.imageUrl && (
+                                                        <div className='flex items-center gap-1'>
+                                                            <span><FaImage/></span>
+                                                            {!conv?.lastMsg?.text && <span>Image</span>}
+                                                        </div>
+                                                    )
+                                                }
+                                                {
+                                                    conv?.lastMsg?.videoUrl && (
+                                                        <div className='flex items-center gap-1'>
+                                                            <span><FaVideo/></span>
+                                                            {!conv?.lastMsg?.text && <span>Video</span>}
+                                                        </div>
+                                                    )
+                                                }
+                                            </div>
+                                            <p className='text-ellipsis line-clamp-1'>{conv?.lastMsg.text}</p>
+                                        </div>
+                                    </div>
+                                    <p className='flex items-center justify-center text-xs ml-auto p-2 w-6 h-6 bg-primary text-white rounded-full font-semibold'>{conv?.unSeenMsg}</p>
                                 </div>
                             )
                         })
