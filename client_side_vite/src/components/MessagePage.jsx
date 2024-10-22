@@ -51,6 +51,8 @@ const MessagePage = () => {
     if (socketConnection) {
       socketConnection.emit("message-page", params.userId);
 
+      socketConnection.emit("seen", params.userId);
+
       socketConnection.on("message-user", (data) => {
         setUserData(data);
       });
@@ -138,7 +140,8 @@ const MessagePage = () => {
           receiver: params?.userId,
           text: message.text,
           imageUrl: message.imageUrl,
-          videoUrl: message.videoUrl
+          videoUrl: message.videoUrl,
+          msgByUserId: user?._id
         });
 
         setMessage({

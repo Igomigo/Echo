@@ -29,7 +29,7 @@ const initialState = {
         state.email = "";
         state.profile_pic = "";
         state.token = "";
-        state.socketConnection = null;
+        state.socketConnection = null; 
       },
       setOnlineUser: (state, action) => {
         state.onlineUser = action.payload

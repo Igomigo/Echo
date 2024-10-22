@@ -7,7 +7,8 @@ import toast from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';
 
-const EditUserDetails = ({ onClose, userData }) => {
+const EditUserDetails = ({ onClose,
+  userData }) => {
   const [data, setData] = useState({
     name: userData?.name,
     email: userData?.email,
@@ -16,9 +17,6 @@ const EditUserDetails = ({ onClose, userData }) => {
 
   const dispatch = useDispatch();
 
-  //console.log("State data", userData);
-  //console.log("useState data", data);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setData({
@@ -26,10 +24,6 @@ const EditUserDetails = ({ onClose, userData }) => {
       [name]: value
     });
   }
-
-  useEffect(() => {
-    setData(userData);
-  }, [userData]);
 
   const handleUploadPhoto = async (e) => {
     const file = e.target.files[0];
@@ -44,23 +38,30 @@ const EditUserDetails = ({ onClose, userData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    console.log("Data beinbg sent:", data);
     try {
       const url = `${import.meta.env.VITE_BACKEND_URL}/api/update-user`;
+      console.log("Request Url:", url);
 
       const response = await axios({
         method: "post",
-        url: url,
-        data: data,
+        url,
+        data,
         withCredentials: true
       });
 
+      console.log("Response:", response);
+
       if (response?.data?.success) {
-        toast.success(response?.data?.message);
+        toast.success(response?.data?.message || "E no dey");
+        console.log(response?.data?.message);
         dispatch(setUser(response?.data?.data));
         onClose();
       }
     } catch (error) {
-      toast(error.response?.data?.message);
+      toast(error.response?.data?.message || "E no dey error");
+      console.error(error);
     }
   }
 
@@ -123,7 +124,7 @@ const EditUserDetails = ({ onClose, userData }) => {
 
           <div className='flex gap-2 w-fit ml-auto'>
             <button onClick={onClose} className='border border-primary px-4 rounded hover:bg-primary hover:text-white text-secondary'>Cancel</button>
-            <button type="submit" onSubmit={handleSubmit} className='border border-primary px-4 rounded bg-primary text-white hover:bg-secondary'>Save</button>
+            <button type="submit" className='border border-primary px-4 rounded bg-primary text-white hover:bg-secondary'>Save</button>
           </div>
         </form>
       </div>

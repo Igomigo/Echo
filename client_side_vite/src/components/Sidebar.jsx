@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BsChatDotsFill } from "react-icons/bs";
 import { FaImage, FaUserPlus, FaVideo } from "react-icons/fa";
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { TbLogout } from "react-icons/tb";
 import Avatar from './Avatar/Avatar';
 import { useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ const Sidebar = () => {
                         return {
                             ...conversationUser,
                             userDetails: conversationUser?.receiver
-                        }
+                        }       
                     } else {
                         return {
                             ...conversationUser,
@@ -112,7 +112,7 @@ const Sidebar = () => {
                     {
                         allUser.map((conv, index) => {
                             return (
-                                <div key={conv?._id} className='flex items-center gap-2 py-3 px-2 hover:cursor-pointer rounded hover:bg-slate-200'>
+                                <Link to={`/${conv?.userDetails?._id}`} key={conv?._id} className='flex items-center gap-2 py-3 px-2 hover:cursor-pointer rounded hover:bg-slate-200'>
                                     <div>
                                         <Avatar
                                             imageUrl={conv?.userDetails?.profile_pic}
@@ -142,11 +142,19 @@ const Sidebar = () => {
                                                     )
                                                 }
                                             </div>
-                                            <p className='text-ellipsis line-clamp-1'>{conv?.lastMsg.text}</p>
+                                            {
+                                                conv?.lastMsg?.text && (
+                                                    <p className='text-ellipsis line-clamp-1'>{conv?.lastMsg?.text}</p>
+                                                )
+                                            }
                                         </div>
                                     </div>
-                                    <p className='flex items-center justify-center text-xs ml-auto p-2 w-6 h-6 bg-primary text-white rounded-full font-semibold'>{conv?.unSeenMsg}</p>
-                                </div>
+                                    {
+                                        conv?.unSeenMsg > 0 && (
+                                            <p className='flex items-center justify-center text-xs ml-auto p-2 w-6 h-6 bg-primary text-white rounded-full font-semibold'>{conv?.unSeenMsg}</p>
+                                        )
+                                    }
+                                </Link>
                             )
                         })
                     }
