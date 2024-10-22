@@ -1,172 +1,169 @@
-// Set up socket.io connection to infuse realtime functionalities to the app
-const express = require("express");
-const { Server } = require("socket.io");
-const User = require("../models/user");
-const http = require("http");
-const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
-const Conversation = require("../models/conversation");
-const Message = require("../models/message");
-const { default: mongoose } = require("mongoose");
+const express = require('express')
+const { Server } = require('socket.io')
+const http  = require('http')
+const getUserDetailsFromToken = require('../helpers/getUserDetailsFromToken')
+const User = require('../models/user')
+const ConversationModel = require("../models/conversation");
+const MessageModel = require("../models/message");
+const getConversation = require('../helpers/getConversation')
 
-const app = express();
+const app = express()
 
-/** Socket connection */
-const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: process.env.CLIENT_URL,
-        credentials: true
+/***socket connection */
+const server = http.createServer(app)
+const io = new Server(server,{
+    cors : {
+        origin : process.env.CLIENT_URL,
+        credentials : true
     }
-});
+})
 
-// Online user array
-const onlineUser = new Set();
+/***
+ * socket running at http://localhost:8080/
+ */
 
-io.on("connection", async (socket) => {
-    console.log("User connected", socket.id);
+//online user
+const onlineUser = new Set()
 
-    const token = socket.handshake.auth.token;
-    let user;
+io.on('connection',async(socket)=>{
+    console.log("connect User ", socket.id)
 
-    try {
-        // Validate token and get user details
-        user = await getUserDetailsFromToken(token);
+    const token = socket.handshake.auth.token 
 
-        if (!user) {
-            throw new Error("Invalid token, user not found");
-        }
+    //current user details 
+    const user = await getUserDetailsFromToken(token)
 
-        // Join user to a room
-        socket.join(user._id.toString());
-        onlineUser.add(user._id.toString());
+    //create a room
+    socket.join(user?._id.toString())
+    onlineUser.add(user?._id?.toString())
 
-        io.emit("onlineUser", Array.from(onlineUser));
-    } catch (error) {
-        console.error("Token validation error:", error.message);
+    io.emit('onlineUser',Array.from(onlineUser))
 
-        // Emit error message to the client or disconnect the socket
-        socket.emit("error", "Invalid or expired token. Please reauthenticate.");
-        return socket.disconnect(); // Disconnect the user with an invalid token
-    }
-
-    // Handle other socket events like "message-page"
-    socket.on("message-page", async (userId) => {
-        // Fetch user details and emit the user payload
-        const userDetails = await User.findById(userId).select("-password");
+    socket.on('message-page',async(userId)=>{
+        console.log('userId',userId)
+        const userDetails = await User.findById(userId).select("-password")
+        
         const payload = {
-            _id: userDetails?._id,
-            name: userDetails?.name,
-            email: userDetails?.email,
-            profile_pic: userDetails?.profile_pic,
-            online: onlineUser.has(userId)
-        };
-        socket.emit("message-user", payload);
-
-        // get previous messages
-        const getConversationMessages = await Conversation.findOne({
-            $or: [
-                { sender: user?._id, receiver: userId },
-                { sender: userId, receiver: user?._id }
-            ]
-        }).populate("messages").sort({updatedAt: -1});
-
-        if (!getConversationMessages) {
-            socket.emit("message", []);
-        } else {
-            socket.emit("message", getConversationMessages.messages);
+            _id : userDetails?._id,
+            name : userDetails?.name,
+            email : userDetails?.email,
+            profile_pic : userDetails?.profile_pic,
+            online : onlineUser.has(userId)
         }
-    });
+        socket.emit('message-user',payload)
 
-    // Handle new message
-    socket.on("new message", async (data) => {
-        // Ensure data.sender and data.receiver are valid ObjectIds
-        if (!data?.sender || !data?.receiver) {
-            console.log("Invalid sender or receiver");
+
+         //get previous message
+         const getConversationMessage = await ConversationModel.findOne({
+            "$or" : [
+                { sender : user?._id, receiver : userId },
+                { sender : userId, receiver :  user?._id}
+            ]
+        }).populate('messages').sort({ updatedAt : -1 })
+
+        socket.emit('message',getConversationMessage?.messages || [])
+    })
+
+
+    //new message
+    socket.on('new message',async(data)=>{
+
+        //check conversation is available both user
+
+        let conversation = await ConversationModel.findOne({
+            "$or" : [
+                { sender : data?.sender, receiver : data?.receiver },
+                { sender : data?.receiver, receiver :  data?.sender}
+            ]
+        })
+
+        //if conversation is not available
+        if(!conversation){
+            const createConversation = await ConversationModel({
+                sender : data?.sender,
+                receiver : data?.receiver
+            })
+            conversation = await createConversation.save()
+        }
+
+        // Ensure msgByUserId is provided
+        if (!data?.msgByUserId) {
+            console.error('msgByUserId is required');
             return;
         }
-        // Check if conversation exists
-        let conversation = await Conversation.findOne({
-            $or: [
-                { sender: data?.sender, receiver: data?.receiver },
-                { sender: data?.receiver, receiver: data?.sender }
+        
+        const message = new MessageModel({
+          text : data.text,
+          imageUrl : data.imageUrl,
+          videoUrl : data.videoUrl,
+          msgByUserId : data?.msgByUserId,
+        })
+        const saveMessage = await message.save()
+
+        const updateConversation = await ConversationModel.updateOne({ _id : conversation?._id },{
+            "$push" : { messages : saveMessage?._id }
+        })
+
+        const getConversationMessage = await ConversationModel.findOne({
+            "$or" : [
+                { sender : data?.sender, receiver : data?.receiver },
+                { sender : data?.receiver, receiver :  data?.sender}
             ]
-        });
+        }).populate('messages').sort({ updatedAt : -1 })
 
-        if (!conversation) {
-            const newConversation = new Conversation({
-                sender: data?.sender,
-                receiver: data?.receiver
-            });
 
-            conversation = await newConversation.save();
-        }
+        io.to(data?.sender).emit('message',getConversationMessage?.messages || [])
+        io.to(data?.receiver).emit('message',getConversationMessage?.messages || [])
 
-        // Create a new message
-        const message = new Message({
-            text: data?.text,
-            imageUrl: data?.imageUrl,
-            videoUrl: data?.videoUrl,
-            msgByUserId: data?.sender
-        });
-        const savedMessage = await message.save();
+        //send conversation
+        const conversationSender = await getConversation(data?.sender)
+        const conversationReceiver = await getConversation(data?.receiver)
 
-        // Add message Id top the conversation model and save
-        conversation.messages.push(savedMessage._id);
-        await conversation.save();
+        io.to(data?.sender).emit('conversation',conversationSender)
+        io.to(data?.receiver).emit('conversation',conversationReceiver)
+    })
 
-        // Emit the conversation data back to the client
-        const getConversationMessages = await Conversation.findOne({
-            $or: [
-                { sender: data?.sender, receiver: data?.receiver },
-                { sender: data?.receiver, receiver: data?.sender }
+
+    //sidebar
+    socket.on('sidebar',async(currentUserId)=>{
+        console.log("current user",currentUserId)
+
+        const conversation = await getConversation(currentUserId)
+
+        socket.emit('conversation',conversation)
+        
+    })
+
+    socket.on('seen',async(msgByUserId)=>{
+        
+        let conversation = await ConversationModel.findOne({
+            "$or" : [
+                { sender : user?._id, receiver : msgByUserId },
+                { sender : msgByUserId, receiver :  user?._id}
             ]
-        }).populate("messages").sort({ updatedAt: -1 });
+        })
 
-        io.to(data?.sender).emit("message", getConversationMessages.messages);
-        io.to(data?.receiver).emit("message", getConversationMessages.messages);
-    });
+        const conversationMessageId = conversation?.messages || []
 
-    socket.on("sidebar", async (currentUserId) => {
-        console.log("CurrentUserId", currentUserId);
+        const updateMessages  = await MessageModel.updateMany(
+            { _id : { "$in" : conversationMessageId }, msgByUserId : msgByUserId },
+            { "$set" : { seen : true }}
+        )
 
-        // Validate the currentUserId
-        if (!currentUserId || currentUserId === "") {
-            console.error("Invalid CurrentUserId:", currentUserId);
-            return;
-        }
+        //send conversation
+        const conversationSender = await getConversation(user?._id?.toString())
+        const conversationReceiver = await getConversation(msgByUserId)
 
-        // Get all conversations for a particular user
-        const currentUserConversations = await Conversation.find({
-            $or: [
-                { sender: currentUserId },
-                { receiver: currentUserId }
-            ]
-        }).sort({ updatedAt: -1 }).populate("messages").populate("sender").populate("receiver");
+        io.to(user?._id?.toString()).emit('conversation',conversationSender)
+        io.to(msgByUserId).emit('conversation',conversationReceiver)
+    })
 
-        const conversation = currentUserConversations.map((conv) => {
-            const countUnseenMsg = conv?.messages.reduce((prev, curr) => prev + (curr.seen ? 0 : 1), 0);
-
-            const payload = {
-                id: conv?._id,
-                sender: conv?.sender,
-                receiver: conv?.receiver,
-                unSeenMsg: countUnseenMsg,
-                lastMsg: conv?.messages[conv?.messages?.length - 1]
-            }
-        });
-
-        //console.log("currentUserConversations", currentUserConversations);
-
-        socket.emit("conversation", conversation);
-    });
-
-    // Disconnect event
-    socket.on("disconnect", () => {
-        onlineUser.delete(user._id);
-        console.log("User disconnected", socket.id);
-    });
-});
-
+    //disconnect
+    socket.on('disconnect',()=>{
+        onlineUser.delete(user?._id?.toString())
+        console.log('disconnect user ',socket.id)
+    })
+})
 
 module.exports = {
     app,

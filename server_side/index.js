@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 
 const dbConnect = require("./config/dbConnect");
-const authRouter = require("./routes/index");
+const routes = require("./routes/index");
 const { app, server } = require("./socket/index");
 
 //const app = express();
@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // API Endpoints
-app.use("/api", authRouter);
+app.use("/api", routes);
 
 const PORT = process.env.PORT || 8080;
 
