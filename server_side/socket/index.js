@@ -28,16 +28,30 @@ const onlineUser = new Set()
 io.on('connection',async(socket)=>{
     console.log("connect User ", socket.id)
 
-    const token = socket.handshake.auth.token 
+    const token = socket.handshake.auth.token
+    
+    let user;
 
-    //current user details 
-    const user = await getUserDetailsFromToken(token)
+    try {
+        //current user details 
+        user = await getUserDetailsFromToken(token)
 
-    //create a room
-    socket.join(user?._id.toString())
-    onlineUser.add(user?._id?.toString())
+        if (!user) {
+            throw new Error("Invalid token, user not found");
+        }
 
-    io.emit('onlineUser',Array.from(onlineUser))
+        //create a room
+        socket.join(user?._id.toString())
+        onlineUser.add(user?._id?.toString())
+
+        io.emit('onlineUser',Array.from(onlineUser))
+    } catch (error) {
+        console.error("Validation error:", error.message);
+
+        // Emit error message to the client or disconnect the socket
+        socket.emit("error", "Invalid or expired token. Please reauthenticate.");
+        return socket.disconnect(); // Disconnect the user with an invalid token
+    }
 
     socket.on('message-page',async(userId)=>{
         console.log('userId',userId)
@@ -122,7 +136,6 @@ io.on('connection',async(socket)=>{
         io.to(data?.sender).emit('conversation',conversationSender)
         io.to(data?.receiver).emit('conversation',conversationReceiver)
     })
-
 
     //sidebar
     socket.on('sidebar',async(currentUserId)=>{
