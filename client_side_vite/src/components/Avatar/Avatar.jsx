@@ -35,8 +35,13 @@ const Avatar = ({userId, name, imageUrl, width, height, className}) => {
         //"bg-fuchsia-600"
     ]
 
-    const randomIndex = Math.floor(Math.random() * bgColors.length);
-    const bgColor = bgColors[randomIndex];
+    // Generate a consistent index based on userId or name
+    const hashCode = (str) => {
+        return str.split("").reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+    };
+
+    const colorIndex = Math.abs(hashCode(userId || name)) % bgColors.length;
+    const bgColor = bgColors[colorIndex];
 
     const isOnline = onlineUser.includes(userId);
 
