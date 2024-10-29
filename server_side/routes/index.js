@@ -6,6 +6,8 @@ const logout = require("../controllers/logout");
 const updateUserDetails = require("../controllers/updateUserDetails");
 const userDetails = require("../controllers/userDetails");
 const searchUser = require("../controllers/searchUser");
+//const getAiConversation = require("../controllers/getAiConversation");
+//const chatWithEcho = require("../controllers/aiChat");
 
 //const profile = require("../controllers/userAccount");
 //const authWare = require("../middlewares/authWare");
@@ -32,6 +34,12 @@ router.post('/update-user',updateUserDetails);
 
 // Search User
 router.post("/search-user", searchUser);
+
+// Chat with Echo AI
+//router.post("/echo/chat", chatWithEcho);
+
+// Get AI conversation
+//router.get("/echo/conversation", getAiConversation);
 
 
 module.exports = router;

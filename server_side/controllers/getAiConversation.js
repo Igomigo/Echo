@@ -1,12 +1,11 @@
 // Contains code that returns the AI conversation for the user
 const getUserDetailsFromToken = require("../helpers/getUserDetailsFromToken");
 const aiConversation = require("../models/aiConversation");
-const aiConversation = require("../models/aiConversation");
 const aiMessage = require("../models/aiMessage");
 
 const getAiConversation = async (req, res) => {
     try {
-        const current_user = getUserDetailsFromToken();
+        const current_user = await getUserDetailsFromToken();
 
         const aiConversation = await aiConversation.findOne(
             { userId: current_user._id }

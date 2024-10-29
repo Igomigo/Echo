@@ -4,20 +4,18 @@ const aiConversation = require("../models/aiConversation");
 const aiMessage = require("../models/aiMessage");
 
 // Import openai
-const { Configuration, OpenAiApi } = require("openai");
+const OpenAI = require("openai");
 
 // Configure openai with the secret key
-const configuration = new Configuration({
+const openai = new OpenAI({
     apiKey: process.env.OPENAI_SECRET_KEY
 });
-
-const openai = new OpenAiApi(configuration);
 
 // Create the chatbot functionality
 const chatWithEcho = async (req, res) => {
     try {
         const token = req.cookies.token || "";
-        const current_user = getUserDetailsFromToken(token);
+        const current_user = await getUserDetailsFromToken(token);
 
         const { messages } = req.body;
 
@@ -56,7 +54,7 @@ const chatWithEcho = async (req, res) => {
         await conversation.save();
 
         // Send the message to the openai chat model
-        const response = openai.createChatCompletion({
+        const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: messages
         });
@@ -84,7 +82,16 @@ const chatWithEcho = async (req, res) => {
         });
 
     } catch (err) {
-        console.log("Error processing response", err.message);
+        console.log("Error processing response:", err.message);
+
+        // Check for OpenAI rate limit or quota errors
+        if (err.status === 429 || err.code === 'insufficient_quota') {
+            return res.status(429).json({
+                error: true,
+                message: "OpenAI API quota exceeded. Please try again later."
+            });
+        }
+
         return res.status(500).json({
             error: true,
             message: "Error processing a response"

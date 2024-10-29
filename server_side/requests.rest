@@ -1,8 +1,10 @@
-GET http://localhost:8080/api/user-details
-//Content-Type: application/json
+POST http://localhost:8080/api/echo/chat
+Content-Type: application/json
+Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZDA1MTdiNWRmMjIyZjk4YmNkZmFjNyIsImVtYWlsIjoiaWZ2QG1haWwiLCJpYXQiOjE3MzAwOTkzNjUsImV4cCI6MTczMDE4NTc2NX0.4j7KoOZn9YmC_ZtXgmiEMaCUEyoZYKLILjF5jj9u4g8
 
-//{
-//    "email": "fati@mail.com",
-//    "password": "fatai",
-//    "name": "Vik"
-//}
+{
+    "messages": [
+        { "role": "system", "content": "You are a helpful assistant but playful and witty" },
+        { "role": "user", "content": "Tell me a very short joke" }
+    ]
+}
