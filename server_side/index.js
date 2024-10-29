@@ -22,6 +22,10 @@ app.use(morgan("dev"));
 // API Endpoints
 app.use("/api", routes);
 
+app.get("/", (req, res) => {
+    return res.status(200).json("Hello and welcome to Echo");
+});
+
 const PORT = process.env.PORT || 8080;
 
 
