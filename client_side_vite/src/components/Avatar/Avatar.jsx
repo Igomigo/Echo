@@ -36,11 +36,11 @@ const Avatar = ({userId, name, imageUrl, width, height, className}) => {
     ]
 
     // Generate a consistent index based on userId or name
-    const hashCode = (str) => {
+    const hashCode = (str = "") => {
         return str.split("").reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
     };
 
-    const colorIndex = Math.abs(hashCode(userId || name)) % bgColors.length;
+    const colorIndex = Math.abs(hashCode(userId || name || "default")) % bgColors.length;
     const bgColor = bgColors[colorIndex];
 
     const isOnline = onlineUser.includes(userId);
