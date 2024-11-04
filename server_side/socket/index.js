@@ -28,7 +28,7 @@ const onlineUser = new Set()
 io.on('connection',async(socket)=>{
     console.log("connect User ", socket.id)
 
-    const token = socket.handshake.auth.token
+    const token = socket.handshake.auth.token;
     
     let user;
 
@@ -36,9 +36,11 @@ io.on('connection',async(socket)=>{
         //current user details 
         user = await getUserDetailsFromToken(token)
 
+        console.log("CurrentUserDetails:", JSON.stringify(user));
+
         if (!user) {
             throw new Error("Invalid token, user not found");
-        }
+        } 
 
         //create a room
         socket.join(user?._id.toString())
